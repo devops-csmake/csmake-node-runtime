@@ -21,7 +21,6 @@
 [~~phases~~]
 clean=Remove all csmake generated files
 package=Create the csmake-node-runtime package
-test=Run integration tests
 **sequences=
    clean -> package: build the csmake-node-runtime install package
 **default=clean -> package
@@ -32,16 +31,21 @@ test=Run integration tests
 [metadata@csmake-node-runtime]
 name=csmake-node-runtime
 version=1.0.0
-description=csmake module for executing Node.js scripts as build steps
-about=Provides the NodeRuntime csmake module, which discovers and runs
- a Node.js interpreter to execute .js scripts as part of a csmake build.
+description=Pure-Python library for locating and invoking a Node.js interpreter
+about=Provides the NodeRuntimeLibrary package, imported by csmake modules
+ (such as csmake-ghactions) that need to execute Node.js scripts as part
+ of a build.
  .
- The node binary is resolved from: --node option, NODE env var,
+ The node binary is resolved from: node= constructor arg, NODE env var,
  NVM_BIN, PATH (node / nodejs), and common install paths.
+ .
+ This package is a pure library; it does not install any csmake modules.
+ First-class csmake sections (NodeRuntime@...) will be provided by a
+ separate csmake-node-runtime-modules package in the future.
 packager=Autumn Patterson <autumn@devops-csmake.com>
 manufacturer=devops-csmake
 depends=python3, csmake
-keywords=make build development node nodejs javascript
+keywords=make build development node nodejs javascript library
 url=https://github.com/devops-csmake/csmake-node-runtime
 copyrights=node-runtime-copyright
 classifiers=
@@ -51,7 +55,7 @@ classifiers=
     Programming Language :: Python :: 3
     License :: OSI Approved :: GNU General Public License v3 (GPLv3)
 **files=
-    <CsmakeModules (python:csmake-modules)> CsmakeModules/*.py
+    <NodeRuntimeLibrary (python:library)> NodeRuntimeLibrary/*.py
 
 # -----------------------------------------------------------------------
 # Copyright
@@ -83,8 +87,8 @@ path_python-lib=PYTHON
 owner_root=root
 group_root=root
 
-map_CsmakeModules=
-   map: <CsmakeModules> -(1-1)-> {PYTHON}/CsmakeNodeRuntime/CsmakeModules/[~~file~~]
+map_NodeRuntimeLibrary=
+   map: <NodeRuntimeLibrary> -(1-1)-> {PYTHON}/NodeRuntimeLibrary/[~~file~~]
    copyright: node-runtime-copyright
    owner:{root}
    group:{root}
@@ -109,7 +113,7 @@ value_rc=1
 # -----------------------------------------------------------------------
 [WheelPackage@wheel-node-runtime]
 package-version=1.0
-top-level=CsmakeNodeRuntime
+top-level=NodeRuntimeLibrary
 maps=node-runtime-installs
 result=%(RESULTS)s/wheelfile
 
@@ -117,19 +121,6 @@ result=%(RESULTS)s/wheelfile
 package-version=1.0
 maps=node-runtime-installs
 result=%(RESULTS)s/zipfile
-
-# -----------------------------------------------------------------------
-# Integration tests
-# -----------------------------------------------------------------------
-[NodeRuntime@test-node-version]
---main=test/version_check.js
-
-[command@test-node-runtime]
-description=Run integration tests
-0000=test-node-version
-
-[~~test~~]
-00=test-node-runtime
 
 # -----------------------------------------------------------------------
 # Build commands
