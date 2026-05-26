@@ -122,12 +122,17 @@ package-version=1.0
 maps=node-runtime-installs
 result=%(RESULTS)s/zipfile
 
+[CsmakeModulePackager@csm-node-runtime]
+result=%(RESULTS)s/csm
+include=
+    NodeRuntimeLibrary/*.py
+
 # -----------------------------------------------------------------------
 # Build commands
 # -----------------------------------------------------------------------
 [command@default]
 description=Create and package a csmake-node-runtime release
-00=csmake-node-runtime, wheel-node-runtime & zip-node-runtime
+00=csmake-node-runtime, wheel-node-runtime & zip-node-runtime & csm-node-runtime
 
 [command@wheel-only]
 description=Create a wheel package only
